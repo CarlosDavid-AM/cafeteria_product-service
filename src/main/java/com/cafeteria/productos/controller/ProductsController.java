@@ -1,13 +1,12 @@
 package com.cafeteria.productos.controller;
 
 import com.cafeteria.productos.dto.request.ProductsRequestDTO;
+import com.cafeteria.productos.dto.response.ProductsPageResponseDTO;
 import com.cafeteria.productos.dto.response.ProductsResponseDTO;
 import com.cafeteria.productos.service.ProductsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/products")
@@ -20,8 +19,10 @@ public class ProductsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductsResponseDTO>> findAll() {
-        return ResponseEntity.ok(productsService.findAll());
+    public ResponseEntity<ProductsPageResponseDTO> findAll(
+            @RequestParam(defaultValue = "0") int pageActual,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        return ResponseEntity.ok(productsService.findAll(pageActual, pageSize));
     }
 
     @GetMapping("/{id}")

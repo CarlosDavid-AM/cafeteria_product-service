@@ -1,6 +1,7 @@
 package com.cafeteria.productos.service;
 
 import com.cafeteria.productos.dto.request.ProductsRequestDTO;
+import com.cafeteria.productos.dto.response.ProductsPageResponseDTO;
 import com.cafeteria.productos.dto.response.ProductsResponseDTO;
 import com.cafeteria.productos.entity.Products;
 import com.cafeteria.productos.enums.APIError;
@@ -8,6 +9,9 @@ import com.cafeteria.productos.exceptions.ProductsExceptions;
 import com.cafeteria.productos.mappers.ListProductsMapper;
 import com.cafeteria.productos.mappers.ProductsMapper;
 import com.cafeteria.productos.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +31,20 @@ public class ProductsService {
         this.listProductsMapper = listProductsMapper;
     }
 
-    public List<ProductsResponseDTO> findAll() {
-        List<Products> products = productRepository.findAll();
-        return listProductsMapper.convert(products);
+    public ProductsPageResponseDTO findAll(int pageActual, int pageSize) {
+        Pageable pageable = PageRequest.of(pageActual, pageSize);
+        Page<Products> page = productRepository.findAll(pageable);
+
+        List<ProductsResponseDTO> dtos = listProductsMapper.convert(page.getContent());
+
+        ProductsPageResponseDTO response = new ProductsPageResponseDTO();
+        response.setPageActual(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalElements(page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
+        response.setProducts(dtos);
+
+        return response;
     }
 
     public ProductsResponseDTO findById(Long id) {
