@@ -2,10 +2,7 @@ package com.cafeteria.productos.entity;
 
 import com.cafeteria.productos.enums.CategoryEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -18,13 +15,12 @@ public class Products {
     @Column(name="product_id", nullable=false)
     private Long product_id;
 
-    @NotBlank(message = "Product name is required")
+    @NotEmpty(message = "Product name is required")
     @Size(max = 100, message = "Product name must not exceed 100 characters")
     @Column(name="product_name", nullable=false)
     private String product_name;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "Category is required")
     @Column(name="category", nullable=false)
     private CategoryEnum category;
 
