@@ -88,4 +88,14 @@ public class ProductsService {
         }
         productRepository.deleteById(id);
     }
+
+    public ProductsResponseDTO toggleActive(Long id) {
+        Products existing = productRepository.findById(id)
+                .orElseThrow(() -> new ProductsExceptions(APIError.RESOURCE_NOT_FOUND));
+
+        existing.setProduct_active(!existing.isProduct_active());
+
+        Products updated = productRepository.save(existing);
+        return productsMapper.convert(updated);
+    }
 }
